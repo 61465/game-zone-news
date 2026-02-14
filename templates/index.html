@@ -3,103 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نبض الألعاب | أخبار تلقائية</title>
+    <title>GAME ZONE | الألعاب فقط</title>
     <style>
-        :root {
-            --primary: #00ff88;
-            --bg: #0b0e14;
-            --card-bg: #161b22;
-            --text: #e6edf3;
+        :root { --gold: #D4AF37; --black: #080808; --card: #121212; }
+        body { background-color: var(--black); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
+        
+        header { padding: 40px; text-align: center; border-bottom: 2px solid var(--gold); }
+        header h1 { color: var(--gold); font-size: 2.5rem; margin: 0; }
+
+        .container { max-width: 1100px; margin: 30px auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        
+        .card { 
+            background: var(--card); border: 1px solid #222; padding: 25px; 
+            border-radius: 15px; display: flex; flex-direction: column; 
+            justify-content: space-between; transition: 0.3s;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
+        .card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        
+        h3 { font-size: 1.2rem; line-height: 1.5; min-height: 3.6em; }
+        
+        /* تصميم الزر الخاص بك معدل ليوضع داخل الكرت */
+        button.lang { 
+            width: 50px; height: 50px; border-radius: 50%;
+            background: linear-gradient(145deg,#0055ff,#1a7bff);
+            color: #fff; font-weight: bold; font-size: 0.9rem;
+            border: none; cursor: pointer;
+            box-shadow: 0 4px #003cb3; transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center;
         }
-        .container {
-            max-width: 900px;
-            margin: auto;
+        button.lang:active { box-shadow: 0 2px #003cb3; transform: translateY(3px); }
+
+        .btn-main {
+            flex-grow: 1; text-align: center; padding: 12px;
+            border: 2px solid var(--gold); color: var(--gold);
+            text-decoration: none; border-radius: 8px; font-weight: bold;
         }
-        header {
-            text-align: center;
-            padding: 40px 0;
-            border-bottom: 1px solid #30363d;
-            margin-bottom: 30px;
-        }
-        header h1 {
-            color: var(--primary);
-            font-size: 2.5rem;
-            margin: 0;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .card {
-            background: var(--card-bg);
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 20px;
-            transition: transform 0.2s, border-color 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-        }
-        .source-badge {
-            background: #238636;
-            color: white;
-            padding: 4px 8px;
-            font-size: 0.7rem;
-            border-radius: 4px;
-            width: fit-content;
-        }
-        .card h3 {
-            font-size: 1.2rem;
-            margin: 15px 0;
-            line-height: 1.5;
-        }
-        .card p {
-            font-size: 0.8rem;
-            color: #8b949e;
-        }
-        .btn {
-            background: var(--primary);
-            color: #000;
-            text-decoration: none;
-            padding: 10px;
-            text-align: center;
-            border-radius: 6px;
-            font-weight: bold;
-            margin-top: 15px;
-        }
+        .btn-main:hover { background: var(--gold); color: black; }
+
+        .actions { display: flex; align-items: center; gap: 15px; margin-top: 20px; }
     </style>
 </head>
 <body>
+    <header><h1>GAME ZONE 🎮</h1></header>
     <div class="container">
-        <header>
-            <h1>🎮 نبض الألعاب</h1>
-            <p>أحدث الأخبار العالمية مترجمة فورياً</p>
-        </header>
-
         <div class="grid">
             {% for item in news %}
             <div class="card">
                 <div>
-                    <span class="source-badge">{{ item.source }}</span>
-                    <h3>{{ item.title }}</h3>
-                    <p>📅 {{ item.date }}</p>
+                    <span style="color:var(--gold); font-weight:bold;">{{ item.source }}</span>
+                    <h3 class="title-text" data-ar="{{ item.title_ar }}" data-en="{{ item.title_en }}">
+                        {{ item.title_ar }}
+                    </h3>
                 </div>
-                <a href="{{ item.link }}" target="_blank" class="btn">قراءة الخبر بالكامل</a>
+                <div class="actions">
+                    <a href="{{ item.link }}" target="_blank" class="btn-main">التفاصيل</a>
+                    <button class="lang" onclick="toggleNews(this)">EN</button>
+                </div>
             </div>
             {% endfor %}
         </div>
     </div>
+
+    <script>
+        function toggleNews(btn) {
+            const card = btn.closest('.card');
+            const title = card.querySelector('.title-text');
+            const arText = title.getAttribute('data-ar');
+            const enText = title.getAttribute('data-en');
+
+            if (title.innerText === arText) {
+                title.innerText = enText;
+                title.style.direction = "ltr";
+                title.style.textAlign = "left";
+                btn.innerText = "AR";
+                btn.style.background = "linear-gradient(145deg,#ff5500,#ff7b1a)"; // تغيير اللون عند التحويل للعربي
+            } else {
+                title.innerText = arText;
+                title.style.direction = "rtl";
+                title.style.textAlign = "right";
+                btn.innerText = "EN";
+                btn.style.background = "linear-gradient(145deg,#0055ff,#1a7bff)";
+            }
+        }
+    </script>
 </body>
 </html>
