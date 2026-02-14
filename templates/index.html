@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نبض الألعاب | أخبار تلقائية</title>
+    <style>
+        :root {
+            --primary: #00ff88;
+            --bg: #0b0e14;
+            --card-bg: #161b22;
+            --text: #e6edf3;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 1px solid #30363d;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin: 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+        .source-badge {
+            background: #238636;
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            width: fit-content;
+        }
+        .card h3 {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+        .card p {
+            font-size: 0.8rem;
+            color: #8b949e;
+        }
+        .btn {
+            background: var(--primary);
+            color: #000;
+            text-decoration: none;
+            padding: 10px;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 نبض الألعاب</h1>
+            <p>أحدث الأخبار العالمية مترجمة فورياً</p>
+        </header>
+
+        <div class="grid">
+            {% for item in news %}
+            <div class="card">
+                <div>
+                    <span class="source-badge">{{ item.source }}</span>
+                    <h3>{{ item.title }}</h3>
+                    <p>📅 {{ item.date }}</p>
+                </div>
+                <a href="{{ item.link }}" target="_blank" class="btn">قراءة الخبر بالكامل</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
