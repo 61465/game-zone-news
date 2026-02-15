@@ -3,89 +3,707 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAME ZONE | الألعاب فقط</title>
+    <title>GAME ZONE NEWS | الرادار النهائي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #D4AF37; --black: #080808; --card: #121212; }
-        body { background-color: var(--black); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
-        
-        header { padding: 40px; text-align: center; border-bottom: 2px solid var(--gold); }
-        header h1 { color: var(--gold); font-size: 2.5rem; margin: 0; }
-
-        .container { max-width: 1100px; margin: 30px auto; padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-        
-        .card { 
-            background: var(--card); border: 1px solid #222; padding: 25px; 
-            border-radius: 15px; display: flex; flex-direction: column; 
-            justify-content: space-between; transition: 0.3s;
+        :root {
+            --gold: #D4AF37;
+            --bg: #050505;
+            --card: #111;
+            --blue: #1877F2;
+            --sword: #ff4757;
+            --shield: #2ed573;
+            --text-light: #e0e0e0;
         }
-        .card:hover { border-color: var(--gold); transform: translateY(-5px); }
-        
-        h3 { font-size: 1.2rem; line-height: 1.5; min-height: 3.6em; }
-        
-        /* تصميم الزر الخاص بك معدل ليوضع داخل الكرت */
-        button.lang { 
-            width: 50px; height: 50px; border-radius: 50%;
-            background: linear-gradient(145deg,#0055ff,#1a7bff);
-            color: #fff; font-weight: bold; font-size: 0.9rem;
-            border: none; cursor: pointer;
-            box-shadow: 0 4px #003cb3; transition: all 0.2s ease;
-            display: flex; align-items: center; justify-content: center;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        button.lang:active { box-shadow: 0 2px #003cb3; transform: translateY(3px); }
-
-        .btn-main {
-            flex-grow: 1; text-align: center; padding: 12px;
-            border: 2px solid var(--gold); color: var(--gold);
-            text-decoration: none; border-radius: 8px; font-weight: bold;
+        body {
+            background: var(--bg);
+            color: var(--text-light);
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
-        .btn-main:hover { background: var(--gold); color: black; }
 
-        .actions { display: flex; align-items: center; gap: 15px; margin-top: 20px; }
+        /* شريط الأخبار العلوي */
+        .ticker-container {
+            background: #000;
+            border-bottom: 2px solid var(--gold);
+            padding: 8px 0;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .ticker-move {
+            display: inline-block;
+            animation: move 70s linear infinite;
+            color: var(--gold);
+            font-size: 0.9rem;
+            white-space: nowrap;
+            font-weight: 700;
+        }
+        @keyframes move { 
+            0% { transform: translateX(100%); } 
+            100% { transform: translateX(-100%); } 
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 25px;
+        }
+
+        header {
+            grid-column: span 2;
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            margin: 0;
+            font-weight: 900;
+            letter-spacing: -2px;
+            text-shadow: 0 0 20px rgba(212,175,55,0.3);
+        }
+        .news-style {
+            font-family: 'Cairo', sans-serif;
+            font-weight: 900;
+            font-size: 0.8em;
+            color: var(--gold);
+            display: block;
+            margin-top: -15px;
+            letter-spacing: 10px;
+        }
+
+        .controls { 
+            grid-column: span 2; 
+            margin-bottom: 30px; 
+        }
+        
+        /* تحسين حقل البحث */
+        .search-input {
+            width: 100%; 
+            max-width: 650px; 
+            display: block; 
+            margin: 0 auto 25px; 
+            padding: 18px 25px;
+            border-radius: 40px; 
+            border: 2px solid #333; 
+            background: #0c0c0c;
+            color: #fff; 
+            font-size: 1.1rem; 
+            text-align: center; 
+            outline: none; 
+            transition: all 0.3s;
+        }
+        .search-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(212,175,55,0.2);
+            background: #111;
+        }
+
+        .tabs { 
+            display: flex; 
+            gap: 12px; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+        }
+        .tab {
+            padding: 10px 28px; 
+            background: #151515; 
+            color: #fff; 
+            text-decoration: none;
+            border-radius: 30px; 
+            font-weight: 700; 
+            font-size: 0.9rem; 
+            transition: all 0.3s; 
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+        .tab:hover, .tab.active { 
+            background: var(--gold); 
+            color: #000; 
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        /* شبكة الأخبار مع تحسين الأداء */
+        .news-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            gap: 25px; 
+        }
+
+        .news-card {
+            background: var(--card); 
+            border-radius: 20px; 
+            border: 1px solid #222;
+            overflow: hidden; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            position: relative; 
+            display: flex; 
+            flex-direction: column;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .news-card:hover { 
+            transform: translateY(-8px) scale(1.02); 
+            border-color: var(--gold); 
+            box-shadow: 0 15px 40px rgba(212,175,55,0.15);
+        }
+
+        .news-img { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            transition: transform 0.5s;
+        }
+        .news-card:hover .news-img {
+            transform: scale(1.05);
+        }
+
+        .card-content { 
+            padding: 20px; 
+            flex-grow: 1; 
+        }
+        .source-name {
+            color: var(--gold); 
+            font-weight: 900; 
+            font-size: 0.85rem;
+            background: rgba(0,0,0,0.6); 
+            padding: 4px 12px; 
+            border-radius: 20px;
+            display: inline-block; 
+            margin-bottom: 12px;
+        }
+        .news-title { 
+            font-size: 1.2rem; 
+            margin: 0 0 15px 0; 
+            line-height: 1.4; 
+            font-weight: 800; 
+            color: #f0f0f0;
+        }
+        .source-link { 
+            font-size: 0.8rem; 
+            color: var(--gold); 
+            text-decoration: none; 
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .source-link:hover {
+            gap: 10px;
+            color: #fff;
+        }
+
+        /* تحسين أزرار التفاعل */
+        .interaction-bar { 
+            display: flex; 
+            border-top: 2px solid #222; 
+            background: #0a0a0a; 
+        }
+        .react-btn {
+            flex: 1; 
+            padding: 15px; 
+            border: none; 
+            background: none; 
+            color: #888;
+            cursor: pointer; 
+            transition: all 0.3s; 
+            display: flex; 
+            align-items: center;
+            justify-content: center; 
+            gap: 8px; 
+            font-weight: bold; 
+            border-left: 2px solid #222;
+            position: relative;
+        }
+        .react-btn:last-child { 
+            border-left: none; 
+        }
+        .react-btn:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        .react-btn.active-sword { 
+            color: var(--sword); 
+            background: rgba(255, 71, 87, 0.15);
+            text-shadow: 0 0 10px rgba(255,71,87,0.3);
+        }
+        .react-btn.active-shield { 
+            color: var(--shield); 
+            background: rgba(46, 213, 115, 0.15);
+            text-shadow: 0 0 10px rgba(46,213,115,0.3);
+        }
+        .count { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 1rem; 
+            min-width: 25px;
+        }
+
+        /* Tooltip مخصص */
+        .react-btn[data-tooltip] {
+            position: relative;
+        }
+        .react-btn[data-tooltip]:before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            border: 1px solid var(--gold);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .react-btn:hover[data-tooltip]:before {
+            opacity: 1;
+            visibility: visible;
+            bottom: 120%;
+        }
+
+        /* جانب مواقع التواصل المحسن */
+        .social-sidebar {
+            background: #0a0a0a; 
+            border-radius: 20px; 
+            padding: 20px;
+            height: calc(100vh - 120px); 
+            position: sticky; 
+            top: 80px; 
+            border: 1px solid #222;
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px;
+            overflow-y: auto;
+        }
+        .social-sidebar::-webkit-scrollbar { 
+            width: 6px; 
+        }
+        .social-sidebar::-webkit-scrollbar-track {
+            background: #111;
+        }
+        .social-sidebar::-webkit-scrollbar-thumb { 
+            background: var(--gold); 
+            border-radius: 10px; 
+        }
+
+        .sidebar-title { 
+            color: var(--gold); 
+            font-weight: 900; 
+            text-align: center; 
+            margin-bottom: 15px; 
+            font-size: 1.1rem; 
+            border-bottom: 2px solid #222;
+            padding-bottom: 10px;
+        }
+
+        iframe { 
+            border-radius: 15px; 
+            border: 1px solid #222;
+            background: #000;
+            transition: 0.3s;
+        }
+        iframe:hover {
+            border-color: var(--gold);
+        }
+
+        /* تحميل متحسن للهاتف */
+        @media (max-width: 1100px) {
+            .container { 
+                grid-template-columns: 1fr; 
+            }
+            .social-sidebar { 
+                order: -1;
+                position: relative; 
+                top: 0; 
+                height: 500px; 
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            header, .controls { 
+                order: 0; 
+            }
+        }
+
+        /* شاشة التحميل */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gold);
+            font-size: 1.2rem;
+            display: none;
+        }
+        .loading.active {
+            display: block;
+        }
+
+        /* رسالة عند عدم وجود نتائج */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px;
+            color: #666;
+            font-size: 1.3rem;
+        }
     </style>
 </head>
 <body>
-    <header><h1>GAME ZONE 🎮</h1></header>
-    <div class="container">
-        <div class="grid">
-            {% for item in news %}
-            <div class="card">
-                <div>
-                    <span style="color:var(--gold); font-weight:bold;">{{ item.source }}</span>
-                    <h3 class="title-text" data-ar="{{ item.title_ar }}" data-en="{{ item.title_en }}">
-                        {{ item.title_ar }}
-                    </h3>
-                </div>
-                <div class="actions">
-                    <a href="{{ item.link }}" target="_blank" class="btn-main">التفاصيل</a>
-                    <button class="lang" onclick="toggleNews(this)">EN</button>
-                </div>
-            </div>
-            {% endfor %}
+
+    <div class="ticker-container">
+        <div class="ticker-move" id="ticker-content">
+            <!-- سيتم تعبئته بالـ JavaScript -->
         </div>
     </div>
 
-    <script>
-        function toggleNews(btn) {
-            const card = btn.closest('.card');
-            const title = card.querySelector('.title-text');
-            const arText = title.getAttribute('data-ar');
-            const enText = title.getAttribute('data-en');
+    <div class="container">
+        <header>
+            <h1>GAME ZONE <span class="news-style">NEWS</span></h1>
+        </header>
 
-            if (title.innerText === arText) {
-                title.innerText = enText;
-                title.style.direction = "ltr";
-                title.style.textAlign = "left";
-                btn.innerText = "AR";
-                btn.style.background = "linear-gradient(145deg,#ff5500,#ff7b1a)"; // تغيير اللون عند التحويل للعربي
-            } else {
-                title.innerText = arText;
-                title.style.direction = "rtl";
-                title.style.textAlign = "right";
-                btn.innerText = "EN";
-                btn.style.background = "linear-gradient(145deg,#0055ff,#1a7bff)";
+        <div class="controls">
+            <input type="text" id="search-input" class="search-input" placeholder="ابحث في رادار التسريبات العالمي..." value="">
+            
+            <div class="tabs" id="tabs-container">
+                <a data-cat="all" class="tab active">الكل</a>
+                <a data-cat="leak" class="tab" style="border-color: var(--sword);">تسريبات 🔥</a>
+                <a data-cat="ps" class="tab">PlayStation</a>
+                <a data-cat="xb" class="tab">Xbox</a>
+                <a data-cat="pc" class="tab">PC Gaming</a>
+            </div>
+        </div>
+
+        <main>
+            <div class="loading" id="loading">جاري التحميل...</div>
+            <div class="news-grid" id="news-grid"></div>
+        </main>
+
+        <aside class="social-sidebar">
+            <h2 class="sidebar-title">📡 رادار التواصل الاجتماعي</h2>
+            <div style="flex-shrink: 0; background: #000; border-radius: 10px; border: 1px solid #222;">
+                <rssapp-list id="FT8WUq74Osq9xXMJ"></rssapp-list>
+                <script src="https://widget.rss.app/v1/list.js" type="text/javascript" async></script>
+            </div>
+            <iframe loading="lazy" src="https://www.reddit.com/r/gaming/hot/?embed=true" width="100%" height="400" frameborder="0" title="Reddit Gaming"></iframe>
+            <iframe loading="lazy" src="https://www.facebook.com/plugins/page.php?href=https://www.facebook.com/IGN&tabs=timeline&width=320&height=400&small_header=true" width="100%" height="400" title="IGN Facebook"></iframe>
+            <iframe loading="lazy" src="https://www.facebook.com/plugins/page.php?href=https://www.facebook.com/GameSpot&tabs=timeline&width=320&height=400&small_header=true" width="100%" height="400" title="GameSpot Facebook"></iframe>
+        </aside>
+    </div>
+
+    <script>
+    // ==================== البيانات التجريبية ====================
+    // في التطبيق الحقيقي، هذه البيانات ستأتي من السيرفر
+    const sampleNews = [
+        {
+            id: 1,
+            source: "IGN",
+            title: "تسريب: Grand Theft Auto VI قد يتأخر إلى 2026",
+            image: "https://via.placeholder.com/400x200/0a0a0a/D4AF37?text=GTA+VI",
+            category: "leak",
+            swords: 234,
+            shields: 56,
+            link: "#"
+        },
+        {
+            id: 2,
+            source: "GameSpot",
+            title: "PlayStation 5 Pro: مواصفات مسربة وتاريخ إصدار متوقع",
+            image: "https://via.placeholder.com/400x200/0a0a0a/1877F2?text=PS5+Pro",
+            category: "ps",
+            swords: 445,
+            shields: 23,
+            link: "#"
+        },
+        {
+            id: 3,
+            source: "PC Gamer",
+            title: "NVIDIA RTX 5090: أداء خرافي واستهلاك طاقة مرتفع",
+            image: "https://via.placeholder.com/400x200/0a0a0a/2ed573?text=RTX+5090",
+            category: "pc",
+            swords: 178,
+            shields: 89,
+            link: "#"
+        },
+        {
+            id: 4,
+            source: "Xbox Wire",
+            title: "Xbox Game Pass يضيف 10 ألعاب جديدة في فبراير",
+            image: "https://via.placeholder.com/400x200/0a0a0a/107C10?text=Game+Pass",
+            category: "xb",
+            swords: 567,
+            shields: 12,
+            link: "#"
+        },
+        {
+            id: 5,
+            source: "Twitter Leaks",
+            title: "God of War: Ragnarok قادم إلى PC رسمياً",
+            image: "https://via.placeholder.com/400x200/0a0a0a/D4AF37?text=God+of+War",
+            category: "leak",
+            swords: 890,
+            shields: 34,
+            link: "#"
+        },
+        {
+            id: 6,
+            source: "PlayStation Blog",
+            title: "The Last of Us Part III في مرحلة التطوير المبكر",
+            image: "https://via.placeholder.com/400x200/0a0a0a/1877F2?text=The+Last+of+Us",
+            category: "ps",
+            swords: 678,
+            shields: 45,
+            link: "#"
+        }
+    ];
+
+    // ==================== إدارة التصويت المحسن ====================
+    class VoteManager {
+        constructor() {
+            this.userVotes = this.loadVotes();
+            this.apiEndpoint = '/react'; // نقطة نهاية API
+        }
+
+        // تحميل التصويتات من localStorage
+        loadVotes() {
+            try {
+                return JSON.parse(localStorage.getItem('gamezone_votes')) || {};
+            } catch {
+                return {};
             }
         }
+
+        // حفظ التصويتات في localStorage
+        saveVotes() {
+            localStorage.setItem('gamezone_votes', JSON.stringify(this.userVotes));
+        }
+
+        // معالجة التصويت
+        async handleVote(newsId, type, card) {
+            // التحقق من التصويت المكرر
+            if (this.userVotes[newsId] === type) return false;
+
+            const swordBtn = card.querySelector('.sword-btn');
+            const shieldBtn = card.querySelector('.shield-btn');
+            const swordCount = swordBtn.querySelector('.count');
+            const shieldCount = shieldBtn.querySelector('.count');
+
+            // إلغاء التصويت السابق
+            if (this.userVotes[newsId]) {
+                const previousType = this.userVotes[newsId];
+                if (previousType === 'sword') {
+                    swordCount.innerText = Math.max(0, parseInt(swordCount.innerText) - 1);
+                    swordBtn.classList.remove('active-sword');
+                } else {
+                    shieldCount.innerText = Math.max(0, parseInt(shieldCount.innerText) - 1);
+                    shieldBtn.classList.remove('active-shield');
+                }
+            }
+
+            // إضافة التصويت الجديد
+            if (type === 'sword') {
+                swordCount.innerText = parseInt(swordCount.innerText) + 1;
+                swordBtn.classList.add('active-sword');
+            } else {
+                shieldCount.innerText = parseInt(shieldCount.innerText) + 1;
+                shieldBtn.classList.add('active-shield');
+            }
+
+            // حفظ الحالة
+            this.userVotes[newsId] = type;
+            this.saveVotes();
+
+            // إرسال إلى السيرفر
+            try {
+                const response = await fetch(this.apiEndpoint, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id: newsId, type: type})
+                });
+                
+                if (!response.ok) {
+                    console.error('فشل في إرسال التصويت');
+                }
+            } catch (error) {
+                console.error('خطأ في الاتصال:', error);
+            }
+
+            return true;
+        }
+    }
+
+    // ==================== إدارة المحتوى (SPA بسيط) ====================
+    class ContentManager {
+        constructor() {
+            this.voteManager = new VoteManager();
+            this.currentCategory = 'all';
+            this.searchQuery = '';
+            this.newsGrid = document.getElementById('news-grid');
+            this.searchInput = document.getElementById('search-input');
+            this.loading = document.getElementById('loading');
+            this.tickerContent = document.getElementById('ticker-content');
+            
+            this.init();
+        }
+
+        init() {
+            // إضافة مستمعي الأحداث
+            this.searchInput.addEventListener('input', (e) => {
+                this.searchQuery = e.target.value;
+                this.debouncedRender();
+            });
+
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    this.currentCategory = tab.dataset.cat;
+                    this.render();
+                });
+            });
+
+            // تعبئة شريط الأخبار
+            this.updateTicker();
+
+            // العرض الأول
+            this.render();
+        }
+
+        // تحديث شريط الأخبار
+        updateTicker() {
+            const tickerHTML = sampleNews.map(news => 
+                `<span style="margin: 0 40px;">⚡ ${news.source}: ${news.title}</span>`
+            ).join('');
+            this.tickerContent.innerHTML = tickerHTML;
+        }
+
+        // فلترة الأخبار
+        filterNews() {
+            return sampleNews.filter(news => {
+                // فلترة حسب التصنيف
+                if (this.currentCategory !== 'all' && news.category !== this.currentCategory) {
+                    return false;
+                }
+                
+                // فلترة حسب البحث
+                if (this.searchQuery) {
+                    const query = this.searchQuery.toLowerCase();
+                    return news.title.toLowerCase().includes(query) || 
+                           news.source.toLowerCase().includes(query);
+                }
+                
+                return true;
+            });
+        }
+
+        // عرض الأخبار
+        render() {
+            this.loading.classList.add('active');
+            
+            // محاكاة تحميل من السيرفر
+            setTimeout(() => {
+                const filteredNews = this.filterNews();
+                
+                if (filteredNews.length === 0) {
+                    this.newsGrid.innerHTML = `
+                        <div class="no-results">
+                            لا توجد نتائج لبحثك "${this.searchQuery}"
+                        </div>
+                    `;
+                } else {
+                    const newsHTML = filteredNews.map((news, index) => `
+                        <article class="news-card" id="card-${news.id}" style="animation-delay: ${index * 0.05}s">
+                            <img src="${news.image}" class="news-img" loading="lazy" 
+                                 onerror="this.src='https://via.placeholder.com/400x200/0a0a0a/D4AF37?text=NO+IMAGE'"
+                                 alt="${news.title}">
+                            <div class="card-content">
+                                <span class="source-name">${news.source}</span>
+                                <h3 class="news-title">${news.title}</h3>
+                                <a href="${news.link}" target="_blank" class="source-link" rel="noopener">
+                                    المصدر الأصلي ←
+                                </a>
+                            </div>
+
+                            <div class="interaction-bar">
+                                <button class="react-btn sword-btn" 
+                                        data-tooltip="السيف: خبر صحيح ومؤكد"
+                                        onclick="contentManager.voteManager.handleVote('${news.id}', 'sword', this.closest('.news-card'))"
+                                        aria-label="صوت بالسيف لهذا الخبر">
+                                    ⚔️ <span class="count">${news.swords}</span>
+                                </button>
+                                <button class="react-btn shield-btn" 
+                                        data-tooltip="الدرع: خبر غير مؤكد أو شائعة"
+                                        onclick="contentManager.voteManager.handleVote('${news.id}', 'shield', this.closest('.news-card'))"
+                                        aria-label="صوت بالدرع لهذا الخبر">
+                                    🛡️ <span class="count">${news.shields}</span>
+                                </button>
+                            </div>
+                        </article>
+                    `).join('');
+                    
+                    this.newsGrid.innerHTML = newsHTML;
+                    
+                    // تطبيق التصويتات السابقة
+                    filteredNews.forEach(news => {
+                        const vote = this.voteManager.userVotes[news.id];
+                        if (vote) {
+                            const card = document.getElementById(`card-${news.id}`);
+                            if (card) {
+                                if (vote === 'sword') {
+                                    card.querySelector('.sword-btn').classList.add('active-sword');
+                                } else {
+                                    card.querySelector('.shield-btn').classList.add('active-shield');
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                this.loading.classList.remove('active');
+            }, 300); // تأخير بسيط لإظهار شاشة التحميل
+        }
+
+        // Debounced search
+        debouncedRender = this.debounce(() => this.render(), 500);
+
+        debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    }
+
+    // بدء التطبيق
+    const contentManager = new ContentManager();
     </script>
 </body>
 </html>
